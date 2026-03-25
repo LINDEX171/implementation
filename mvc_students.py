@@ -1,4 +1,5 @@
 from collections.abc import Iterable, Iterator
+from abc import ABCMeta
 
 
 def add_subject(subject_name: str):
@@ -120,6 +121,16 @@ class StudentIteratorMatter3(Iterator):
         return student
 
 
+class SingletonMeta(ABCMeta):
+
+    _instance = None
+
+    def __call__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__call__(*args, **kwargs)
+        return cls._instance
+
+
 def add_matter_iterator(subject_name: str):
     def decorator(cls):
         def iter_matter_4(self) -> StudentIterator:
@@ -131,7 +142,7 @@ def add_matter_iterator(subject_name: str):
 
 
 @add_matter_iterator('history')
-class SchoolClass(Iterable):
+class SchoolClass(Iterable, metaclass=SingletonMeta):
 
     def __init__(self):
         self.__repository = StudentRepository()
@@ -181,6 +192,9 @@ if __name__ == '__main__':
     controller.show_averages()
 
     school_class = SchoolClass()
+    school_class_copy = SchoolClass()
+    assert school_class is school_class_copy, 'SchoolClass is not a singleton!'
+    print('\nSchoolClass is a singleton:', school_class is school_class_copy)
     school_class.add_student(Student('J', 10, 12, 13, history=7))
     school_class.add_student(Student('A', 8, 2, 17, history=14))
     school_class.add_student(Student('V', 9, 14, 14, history=18))
