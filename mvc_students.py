@@ -54,6 +54,10 @@ class StudentController:
             ranked = self.__repository.get_sorted_by_subject(subject)
             self.__view.show_ranking(subject, ranked)
 
+    def show_ranking_by_subject(self, subject: str):
+        ranked = self.__repository.get_sorted_by_subject(subject)
+        self.__view.show_ranking(subject, ranked)
+
     def show_averages(self):
         self.__view.show_averages(self.__repository.get_all())
 
@@ -70,6 +74,9 @@ class SchoolClass:
     def display(self):
         self.__controller.show_all_rankings()
         self.__controller.show_averages()
+
+    def rank_matter_1(self):
+        self.__controller.show_ranking_by_subject('math')
 
 
 if __name__ == '__main__':
@@ -88,3 +95,4 @@ if __name__ == '__main__':
     school_class.add_student(Student('A', 8, 2, 17))
     school_class.add_student(Student('V', 9, 14, 14))
     school_class.display()
+    school_class.rank_matter_1()
