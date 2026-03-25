@@ -1,3 +1,6 @@
+from collections.abc import Iterable, Iterator
+
+
 class Student:
 
     def __init__(self, name: str, math: float, english: float, science: float):
@@ -62,7 +65,21 @@ class StudentController:
         self.__view.show_averages(self.__repository.get_all())
 
 
-class SchoolClass:
+class StudentIterator(Iterator):
+
+    def __init__(self, students: list[Student]):
+        self.__students = students
+        self.__index = 0
+
+    def __next__(self) -> Student:
+        if self.__index >= len(self.__students):
+            raise StopIteration
+        student = self.__students[self.__index]
+        self.__index += 1
+        return student
+
+
+class SchoolClass(Iterable):
 
     def __init__(self):
         self.__repository = StudentRepository()
@@ -84,6 +101,10 @@ class SchoolClass:
     def rank_matter_3(self):
         self.__controller.show_ranking_by_subject('science')
 
+    def __iter__(self) -> StudentIterator:
+        sorted_students = self.__repository.get_sorted_by_subject('math')
+        return StudentIterator(sorted_students)
+
 
 if __name__ == '__main__':
     repo = StudentRepository()
@@ -104,3 +125,7 @@ if __name__ == '__main__':
     school_class.rank_matter_1()
     school_class.rank_matter_2()
     school_class.rank_matter_3()
+
+    print('\n--- Iterator: math ranking ---')
+    for student in school_class:
+        print(f'  {student.name}: {student.grades["math"]}/20')
