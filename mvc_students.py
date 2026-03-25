@@ -120,6 +120,17 @@ class StudentIteratorMatter3(Iterator):
         return student
 
 
+def add_matter_iterator(subject_name: str):
+    def decorator(cls):
+        def iter_matter_4(self) -> StudentIterator:
+            repo = getattr(self, f'_{cls.__name__}__repository')
+            return StudentIterator(repo.get_sorted_by_subject(subject_name))
+        cls.iter_matter_4 = iter_matter_4
+        return cls
+    return decorator
+
+
+@add_matter_iterator('history')
 class SchoolClass(Iterable):
 
     def __init__(self):
@@ -156,10 +167,6 @@ class SchoolClass(Iterable):
 
     def rank_matter_4(self):
         self.__controller.show_ranking_by_subject('history')
-
-    def iter_matter_4(self) -> StudentIterator:
-        sorted_students = self.__repository.get_sorted_by_subject('history')
-        return StudentIterator(sorted_students)
 
 
 if __name__ == '__main__':
