@@ -1,6 +1,19 @@
 from collections.abc import Iterable, Iterator
 
 
+def add_subject(subject_name: str):
+    def decorator(cls):
+        original_init = cls.__init__
+        def new_init(self, *args, **kwargs):
+            matter4 = kwargs.pop(subject_name)
+            original_init(self, *args, **kwargs)
+            self.grades[subject_name] = matter4
+        cls.__init__ = new_init
+        return cls
+    return decorator
+
+
+@add_subject('history')
 class Student:
 
     def __init__(self, name: str, math: float, english: float, science: float):
@@ -52,7 +65,7 @@ class StudentController:
         self.__view = view
 
     def show_all_rankings(self):
-        subjects = ['math', 'english', 'science']
+        subjects = ['math', 'english', 'science', 'history']
         for subject in subjects:
             ranked = self.__repository.get_sorted_by_subject(subject)
             self.__view.show_ranking(subject, ranked)
@@ -141,22 +154,29 @@ class SchoolClass(Iterable):
         sorted_students = self.__repository.get_sorted_by_subject('science')
         return StudentIteratorMatter3(sorted_students)
 
+    def rank_matter_4(self):
+        self.__controller.show_ranking_by_subject('history')
+
+    def iter_matter_4(self) -> StudentIterator:
+        sorted_students = self.__repository.get_sorted_by_subject('history')
+        return StudentIterator(sorted_students)
+
 
 if __name__ == '__main__':
     repo = StudentRepository()
-    repo.add(Student('Alice', math=18, english=14, science=16))
-    repo.add(Student('Bob',   math=12, english=17, science=11))
-    repo.add(Student('Clara', math=15, english=10, science=19))
-    repo.add(Student('David', math=9,  english=13, science=14))
+    repo.add(Student('Alice', math=18, english=14, science=16, history=15))
+    repo.add(Student('Bob',   math=12, english=17, science=11, history=8))
+    repo.add(Student('Clara', math=15, english=10, science=19, history=17))
+    repo.add(Student('David', math=9,  english=13, science=14, history=11))
 
     controller = StudentController(repo, StudentView())
     controller.show_all_rankings()
     controller.show_averages()
 
     school_class = SchoolClass()
-    school_class.add_student(Student('J', 10, 12, 13))
-    school_class.add_student(Student('A', 8, 2, 17))
-    school_class.add_student(Student('V', 9, 14, 14))
+    school_class.add_student(Student('J', 10, 12, 13, history=7))
+    school_class.add_student(Student('A', 8, 2, 17, history=14))
+    school_class.add_student(Student('V', 9, 14, 14, history=18))
     school_class.display()
     school_class.rank_matter_1()
     school_class.rank_matter_2()
@@ -173,3 +193,8 @@ if __name__ == '__main__':
     print('\n--- Iterator: science ranking ---')
     for student in school_class.iter_matter_3():
         print(f'  {student.name}: {student.grades["science"]}/20')
+
+    school_class.rank_matter_4()
+    print('\n--- Iterator: history ranking ---')
+    for student in school_class.iter_matter_4():
+        print(f'  {student.name}: {student.grades["history"]}/20')
