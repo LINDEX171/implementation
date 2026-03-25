@@ -79,6 +79,34 @@ class StudentIterator(Iterator):
         return student
 
 
+class StudentIteratorMatter2(Iterator):
+
+    def __init__(self, students: list[Student]):
+        self.__students = students
+        self.__index = 0
+
+    def __next__(self) -> Student:
+        if self.__index >= len(self.__students):
+            raise StopIteration
+        student = self.__students[self.__index]
+        self.__index += 1
+        return student
+
+
+class StudentIteratorMatter3(Iterator):
+
+    def __init__(self, students: list[Student]):
+        self.__students = students
+        self.__index = 0
+
+    def __next__(self) -> Student:
+        if self.__index >= len(self.__students):
+            raise StopIteration
+        student = self.__students[self.__index]
+        self.__index += 1
+        return student
+
+
 class SchoolClass(Iterable):
 
     def __init__(self):
@@ -105,6 +133,14 @@ class SchoolClass(Iterable):
         sorted_students = self.__repository.get_sorted_by_subject('math')
         return StudentIterator(sorted_students)
 
+    def iter_matter_2(self) -> StudentIteratorMatter2:
+        sorted_students = self.__repository.get_sorted_by_subject('english')
+        return StudentIteratorMatter2(sorted_students)
+
+    def iter_matter_3(self) -> StudentIteratorMatter3:
+        sorted_students = self.__repository.get_sorted_by_subject('science')
+        return StudentIteratorMatter3(sorted_students)
+
 
 if __name__ == '__main__':
     repo = StudentRepository()
@@ -129,3 +165,11 @@ if __name__ == '__main__':
     print('\n--- Iterator: math ranking ---')
     for student in school_class:
         print(f'  {student.name}: {student.grades["math"]}/20')
+
+    print('\n--- Iterator: english ranking ---')
+    for student in school_class.iter_matter_2():
+        print(f'  {student.name}: {student.grades["english"]}/20')
+
+    print('\n--- Iterator: science ranking ---')
+    for student in school_class.iter_matter_3():
+        print(f'  {student.name}: {student.grades["science"]}/20')
