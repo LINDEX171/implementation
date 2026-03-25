@@ -58,6 +58,20 @@ class StudentController:
         self.__view.show_averages(self.__repository.get_all())
 
 
+class SchoolClass:
+
+    def __init__(self):
+        self.__repository = StudentRepository()
+        self.__controller = StudentController(self.__repository, StudentView())
+
+    def add_student(self, student: Student):
+        self.__repository.add(student)
+
+    def display(self):
+        self.__controller.show_all_rankings()
+        self.__controller.show_averages()
+
+
 if __name__ == '__main__':
     repo = StudentRepository()
     repo.add(Student('Alice', math=18, english=14, science=16))
@@ -68,3 +82,9 @@ if __name__ == '__main__':
     controller = StudentController(repo, StudentView())
     controller.show_all_rankings()
     controller.show_averages()
+
+    school_class = SchoolClass()
+    school_class.add_student(Student('J', 10, 12, 13))
+    school_class.add_student(Student('A', 8, 2, 17))
+    school_class.add_student(Student('V', 9, 14, 14))
+    school_class.display()
