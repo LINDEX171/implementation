@@ -78,6 +78,12 @@ class SchoolClass:
     def rank_matter_1(self):
         self.__controller.show_ranking_by_subject('math')
 
+    def rank_matter_2(self):
+        self.__controller.show_ranking_by_subject('english')
+
+    def rank_matter_3(self):
+        self.__controller.show_ranking_by_subject('science')
+
 
 if __name__ == '__main__':
     repo = StudentRepository()
@@ -96,3 +102,5 @@ if __name__ == '__main__':
     school_class.add_student(Student('V', 9, 14, 14))
     school_class.display()
     school_class.rank_matter_1()
+    school_class.rank_matter_2()
+    school_class.rank_matter_3()
